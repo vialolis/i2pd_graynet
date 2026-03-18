@@ -19,6 +19,7 @@
 #include "HTTPProxy.h"
 #include "SOCKS.h"
 #include "MatchedDestination.h"
+#include "GrayNetResolver.h"
 
 namespace i2p
 {
@@ -49,6 +50,11 @@ namespace client
 
 		// addressbook
 		m_AddressBook.Start ();
+
+		//GrayNet Edited
+		i2p::data::GrayNetResolver::Instance().Load(
+			i2p::fs::DataDirPath("graynet/zones.txt")
+		);
 
 		// HTTP proxy
 		ReadHttpProxy ();

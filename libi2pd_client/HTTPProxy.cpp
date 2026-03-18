@@ -500,8 +500,8 @@ namespace proxy
 				}
 			}
 		}
-		/* check dest_host really exists and inside I2P network */
-		if (str_rmatch(dest_host, ".i2p")) {
+		/* check dest_host really exists and inside I2P network */ //GrayNet Edited
+		if (str_rmatch(dest_host, ".i2p") || str_rmatch(dest_host, ".gn")) {
 			if (!i2p::client::context.GetAddressBook ().GetAddress (dest_host)) {
 				HostNotFound(dest_host);
 				return true; /* request processed */

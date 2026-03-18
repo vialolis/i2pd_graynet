@@ -26,6 +26,7 @@
 #include "ClientContext.h"
 #include "AddressBook.h"
 #include "Config.h"
+#include "GrayNetResolver.h"
 
 #if STD_FILESYSTEM
 #include <filesystem>
@@ -454,7 +455,26 @@ namespace client
 			auto addr = FindAddress (address);
 			if (!addr)
 				LookupAddress (address); // TODO:
+
+				// GrayNet fallback GrayNet Edited
+				if (!addr && address.size() > 3 && address.substr(address.size() - 3) == ".gn")
+				{
+					std::string host(address); // фикс string_view → string
+
+					auto dest = i2p::data::GrayNetResolver::Instance().Resolve(host);
+
+					if (!dest.empty())
+					{
+						i2p::data::IdentityEx ident;
+						if (ident.FromBase64(dest))
+						{
+							auto newAddr = std::make_shared<Address>(ident.GetIdentHash());
+							return newAddr;
+						}
+					}
+				}
 			return addr;
+
 		}
 		// if not .b32 we assume full base64 address
 		i2p::data::IdentityEx dest;
