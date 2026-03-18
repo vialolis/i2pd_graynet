@@ -1525,8 +1525,8 @@ namespace http {
 			if (dest)
 			{
 				std::size_t pos;
-				pos = name.find (".i2p");
-				if (pos == (name.length () - 4))
+				pos = (name.find (".i2p") || name.find(".gn"));
+				if (pos == (name.length () - 4) || pos == (name.length() - 3))
 				{
 					pos = name.find (".b32.i2p");
 					if (pos == std::string::npos)

@@ -654,11 +654,11 @@ namespace proxy
 		connection->Start();
 		Terminate();
 	}
-
+	//GrayNet Edited
 	void HTTPReqHandler::HTTPConnect(std::string_view host, uint16_t port)
 	{
 		LogPrint(eLogDebug, "HTTPProxy: CONNECT ",host, ":", port);
-		if(str_rmatch(host, ".i2p"))
+		if(str_rmatch(host, ".i2p") || str_rmatch(host, ".gn"))
 			GetOwner()->CreateStream (std::bind (&HTTPReqHandler::HandleHTTPConnectStreamRequestComplete,
 				shared_from_this(), std::placeholders::_1), host, port);
 		else

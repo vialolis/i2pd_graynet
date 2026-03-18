@@ -446,9 +446,9 @@ namespace client
 		}
 		else
 #if __cplusplus >= 202002L // C++20
-		if (address.ends_with (".i2p"))
+		if (address.ends_with (".i2p") || address.ends_with(".gn"))
 #else
-		if (address.find (".i2p") != std::string::npos)
+		if (address.find (".i2p") != std::string::npos || address.find(".gn") != std::string::npos)
 #endif
 		{
 			if (!m_IsEnabled) return nullptr;
@@ -604,9 +604,9 @@ namespace client
 				}
 
 #if __cplusplus >= 202002L // C++20
-				if (!name.ends_with (".i2p"))
+				if (!name.ends_with (".i2p") || !name.ends_with(".gn"))
 #else
-				if (name.find(".i2p") == name.npos)
+				if (name.find(".i2p") == name.npos || name.find(".gn") == name.npos)
 #endif
 				{
 					LogPrint (eLogError, "Addressbook: Malformed domain: ", name);
