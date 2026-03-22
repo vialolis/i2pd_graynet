@@ -116,12 +116,12 @@ namespace win32
 			case WM_CREATE:
 			{
 				s_uTaskbarRestart = RegisterWindowMessage(TEXT("TaskbarCreated"));
-				AddTrayIcon (hWnd, true);
+				//AddTrayIcon (hWnd, true);
 				break;
 			}
 			case WM_CLOSE:
 			{
-				RemoveTrayIcon (hWnd);
+				//RemoveTrayIcon (hWnd);
 				KillTimer (hWnd, FRAME_UPDATE_TIMER);
 				KillTimer (hWnd, IDT_GRACEFUL_SHUTDOWN_TIMER);
 				KillTimer (hWnd, IDT_GRACEFUL_TUNNELCHECK_TIMER);
@@ -307,8 +307,8 @@ namespace win32
 			}
 			default:
 			{
-				if (uMsg == s_uTaskbarRestart)
-					AddTrayIcon (hWnd, false);
+			//	if (uMsg == s_uTaskbarRestart)
+			//		AddTrayIcon (hWnd, false);
 				break;
 			}
 		}

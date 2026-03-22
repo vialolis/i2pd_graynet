@@ -31,6 +31,7 @@
 #include "HTTP.h"
 #include "I18N.h"
 #include "Socks5.h"
+#include "GrayNetResolver.h"
 
 namespace i2p
 {
@@ -501,10 +502,23 @@ namespace proxy
 			}
 		}
 		/* check dest_host really exists and inside I2P network */ //GrayNet Edited
-		if (str_rmatch(dest_host, ".i2p") || str_rmatch(dest_host, ".gn")) {
-			if (!i2p::client::context.GetAddressBook ().GetAddress (dest_host)) {
-				HostNotFound(dest_host);
-				return true; /* request processed */
+		if (str_rmatch(dest_host, ".i2p") || str_rmatch(dest_host, ".gn")) { 
+			if (str_rmatch(dest_host, ".gn")) {
+				std::string gnDest = i2p::data::GrayNetResolver::Instance().Resolve(dest_host);
+				if (!gnDest.empty()) {
+					LogPrint(eLogDebug, "HTTPProxy: GrayNet resolved ", dest_host, " -> ", gnDest);
+					dest_host = gnDest;
+				}
+				else {
+					HostNotFound(dest_host);
+					return true;
+				}
+			}
+			else {
+				if (!i2p::client::context.GetAddressBook().GetAddress(dest_host)) {
+					HostNotFound(dest_host);
+					return true;
+				}
 			}
 		} else {
 			if(m_OutproxyUrl.size()) {
@@ -657,10 +671,19 @@ namespace proxy
 	//GrayNet Edited
 	void HTTPReqHandler::HTTPConnect(std::string_view host, uint16_t port)
 	{
-		LogPrint(eLogDebug, "HTTPProxy: CONNECT ",host, ":", port);
-		if(str_rmatch(host, ".i2p") || str_rmatch(host, ".gn"))
-			GetOwner()->CreateStream (std::bind (&HTTPReqHandler::HandleHTTPConnectStreamRequestComplete,
-				shared_from_this(), std::placeholders::_1), host, port);
+		std::string resolved_host(host);
+		if (str_rmatch(host, ".gn")) {
+			std::string gnDest = i2p::data::GrayNetResolver::Instance().Resolve(resolved_host);
+			if (!gnDest.empty())
+				resolved_host = gnDest;
+			else {
+				GenericProxyError(tr("Host not found"), tr("GrayNet host not found in zones"));
+				return;
+			}
+		}
+		if (str_rmatch(resolved_host, ".i2p") || str_rmatch(host, ".gn"))
+			GetOwner()->CreateStream(std::bind(&HTTPReqHandler::HandleHTTPConnectStreamRequestComplete,
+				shared_from_this(), std::placeholders::_1), resolved_host, port);
 		else
 			ForwardToUpstreamProxy();
 	}
