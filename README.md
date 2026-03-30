@@ -11,6 +11,82 @@
 i2pd
 ====
 
+## ⚠️ GrayNet Fork Notice
+
+This repository is a **modified fork** of i2pd.
+
+### Key difference
+
+* Adds experimental support for `.gn` TLD domain resolution
+
+### Scope of changes
+
+This fork is intentionally minimal:
+
+* No changes to cryptography
+* No changes to tunnel routing
+* No changes to transport protocols
+* No hidden proxies or traffic interception
+
+Additional component:
+
+* Local proxy adjustment to allow browsers to resolve `.gn` domains
+
+All modifications are limited to domain resolution and local proxy handling.
+
+---
+
+## 🌐 .gn Domain Resolution
+
+### How it works
+
+* `.gn` domains are resolved using a **static mapping defined in the source code**
+* Each `.gn` domain maps to a **Base64 I2P destination address**
+* No external DNS or HTTP requests are performed during resolution
+
+Example:
+
+```
+example.gn → <base64 I2P destination>
+```
+
+---
+
+### External connections
+
+* No external servers are used for `.gn` resolution
+* No remote lookups are performed
+
+---
+
+## 🔍 Trust Model
+
+* `.gn` mappings are **hardcoded in the client**
+* Changes require modifying the source code and rebuilding the application
+* No remote updates or dynamic resolution are implemented
+
+Implication:
+
+* The resolver cannot fetch or modify domain mappings at runtime
+* Users can fully audit all `.gn` mappings by inspecting the source code
+
+---
+
+## ⚠️ Notes
+
+* This is not part of the official i2pd project
+* `.gn` is an experimental feature and not a standard I2P naming system
+* Users should review the implementation before trusting it
+
+---
+
+## 🔎 Compare with upstream
+
+Full diff:
+https://github.com/PurpleI2P/i2pd/compare/openssl...vialolis:i2pd_graynet:openssl
+
+---
+
 [Русская версия](https://github.com/PurpleI2P/i2pd_docs_ru/blob/master/README.md)
 
 i2pd (I2P Daemon) is a full-featured C++ implementation of I2P client.  
